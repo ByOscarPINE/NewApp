@@ -1,17 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-login-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule],
   template: `
     <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-cyan-100/50">
       <div class="text-center">
         <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h2>
         <p class="mt-2 text-sm text-gray-500 italic">Please enter your credentials to access your account</p>
       </div>
+
+      @if (errorMessage()) {
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200 animate-pulse">
+          <span class="font-bold">Error:</span> {{ errorMessage() }}
+        </div>
+      }
       
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-4">
         <div>
@@ -22,12 +28,19 @@ import { CommonModule } from '@angular/common';
             formControlName="email"
             class="block w-full px-4 py-3 text-gray-900 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all outline-none bg-gray-50 hover:bg-white"
             placeholder="you@example.com"
-            [ngClass]="{'border-red-500 bg-red-50': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}"
+            [class.border-red-500]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            [class.bg-red-50]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
           >
-          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="mt-1 text-xs text-red-500 font-medium">
-            <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</span>
-            <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email address.</span>
-          </div>
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+            <div class="mt-1 text-xs text-red-500 font-medium">
+              @if (loginForm.get('email')?.errors?.['required']) {
+                <span>Email is required.</span>
+              }
+              @if (loginForm.get('email')?.errors?.['email']) {
+                <span>Please enter a valid email address.</span>
+              }
+            </div>
+          }
         </div>
 
         <div>
@@ -38,11 +51,16 @@ import { CommonModule } from '@angular/common';
             formControlName="password"
             class="block w-full px-4 py-3 text-gray-900 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all outline-none bg-gray-50 hover:bg-white"
             placeholder="••••••••"
-            [ngClass]="{'border-red-500 bg-red-50': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
+            [class.border-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            [class.bg-red-50]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
           >
-          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="mt-1 text-xs text-red-500 font-medium">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</span>
-          </div>
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+            <div class="mt-1 text-xs text-red-500 font-medium">
+              @if (loginForm.get('password')?.errors?.['required']) {
+                <span>Password is required.</span>
+              }
+            </div>
+          }
         </div>
 
         <div class="flex items-center justify-between">
@@ -57,10 +75,14 @@ import { CommonModule } from '@angular/common';
 
         <button 
           type="submit" 
-          [disabled]="loginForm.invalid"
+          [disabled]="loginForm.invalid || isLoading()"
           class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5 active:translate-y-0"
         >
-          Sign In
+          @if (isLoading()) {
+            <span class="animate-spin mr-2">⏳</span> Processing...
+          } @else {
+            Sign In
+          }
         </button>
       </form>
     </div>
@@ -76,15 +98,33 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginForm {
   private fb = inject(FormBuilder);
+  private auth_service = inject(Auth);
+
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      console.log('Form Submitted!', this.loginForm.value);
+  async onSubmit() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    try {
+      await this.auth_service.login(this.loginForm.value as { email: string, password: string });
+      console.log('Login successful!');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      this.errorMessage.set(error.message || 'An unexpected error occurred. Please check your credentials.');
+    } finally {
+      this.isLoading.set(false);
     }
   }
 }
