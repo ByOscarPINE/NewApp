@@ -1,1 +1,64 @@
-<app-name></app-name>
+<div class="container mx-auto p-8">
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl transition-all hover:shadow-2xl">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-50/50 border-b border-gray-200">
+            <th class="px-6 py-4 font-semibold text-gray-700">Producto</th>
+            <th class="px-6 py-4 font-semibold text-gray-700">Imagen</th>
+            <th class="px-6 py-4 font-semibold text-gray-700">Categoría</th>
+            <th class="px-6 py-4 font-semibold text-gray-700 text-right">Precio</th>
+            <th class="px-6 py-4 font-semibold text-gray-700 text-right">Original</th>
+            <th class="px-6 py-4 font-semibold text-gray-700 text-center">Stock</th>
+            <th class="px-6 py-4 font-semibold text-gray-700">Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.nombre) {
+            <tr class="group border-b border-gray-100 transition-colors hover:bg-gray-50/80">
+              <td class="px-6 py-4">
+                <span class="font-medium text-gray-900">{{ product.nombre }}</span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <div class="mx-auto relative h-16 w-16 overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-transform duration-300 group-hover:scale-110">
+                  <img [src]="product.imagen" [alt]="product.nombre" class="h-full w-full object-cover">
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                  {{ product.categoria }}
+                </span>
+              </td>
+              <td class="px-6 py-4 font-semibold text-emerald-600 text-right text-lg">
+                ${{ product.precio }}
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-400 line-through text-right">
+                ${{ product.precio_salida }}
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-col items-center gap-1">
+                  <span class="text-sm font-medium text-gray-600">{{ product.stock }}</span>
+                  <div class="h-1.5 w-16 overflow-hidden rounded-full bg-gray-100">
+                    <div class="h-full bg-blue-500 transition-all duration-500" [style.width.%]="(product.stock / 200) * 100"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                {{ product.descripcion }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-8 flex justify-end">
+    <button class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-indigo-300/50 active:scale-95 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+      </svg>
+      Nuevo Producto
+    </button>
+  </div>
+</div>

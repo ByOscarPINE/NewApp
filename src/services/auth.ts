@@ -10,8 +10,8 @@ export class Auth {
   private supabase: SupabaseClient;
 
   constructor() {
-    const supabaseUrl = 'URL';
-    const supabaseKey = 'ANON KEY'; 
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 

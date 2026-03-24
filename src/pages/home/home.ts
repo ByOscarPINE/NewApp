@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Name } from '../../components/name/name';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-home',
-  imports: [Name],
+  imports: [],
   templateUrl: './home.html',
   styles: `
     :host {
@@ -12,4 +11,7 @@ import { Name } from '../../components/name/name';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Home { }
+export class Home {
+  products = signal([
+  ]);
+}
