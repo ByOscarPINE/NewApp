@@ -1,4 +1,12 @@
 <div class="container mx-auto p-8">
+  <div class="my-3 flex justify-end">
+    <button (click)="openDialog()" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-indigo-300/50 active:scale-95 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+      </svg>
+      Nuevo Producto
+    </button>
+  </div>
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl transition-all hover:shadow-2xl">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
@@ -14,7 +22,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (product of products(); track product.nombre) {
+          <!-- @for (product of products(); track product.nombre) {
             <tr class="group border-b border-gray-100 transition-colors hover:bg-gray-50/80">
               <td class="px-6 py-4">
                 <span class="font-medium text-gray-900">{{ product.nombre }}</span>
@@ -47,18 +55,12 @@
                 {{ product.descripcion }}
               </td>
             </tr>
-          }
+          } -->
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="mt-8 flex justify-end">
-    <button class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-indigo-300/50 active:scale-95 group">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-      </svg>
-      Nuevo Producto
-    </button>
-  </div>
 </div>
+
+<app-dialog></app-dialog>

@@ -29,4 +29,22 @@ export class Auth {
     this.router.navigate(['/home']);
     return data;
   }
+
+  async getUser(){
+    const { data, error } = await this.supabase.auth.getUser();
+    if (error) {
+      throw new Error( 'Error' + error.message);
+    }
+    return data.user;
+  }
+
+  async getProducts () {
+    const { data: products, error } = await this.supabase
+      .from('products')
+      .select('*')
+    if (error) {
+      throw new Error( 'Error' + error.message);
+    }
+    return products;
+  }
 }
