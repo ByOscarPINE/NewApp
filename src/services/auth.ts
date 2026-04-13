@@ -10,8 +10,8 @@ export class Auth {
   private supabase: SupabaseClient;
 
   constructor() {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    const supabaseUrl = import.meta.env['NG_APP_SUPABASE_URL'] as string;
+    const supabaseKey = import.meta.env['NG_APP_SUPABASE_ANON_KEY'] as string;
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
