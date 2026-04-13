@@ -1,7 +1,7 @@
 (window as any).process = {
   env: {
-    SUPABASE_URL: 'https://tmvgmxbqncxejzmdkhli.supabase.co',
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtdmdteGJxbmN4ZWp6bWRraGxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzYxMjgsImV4cCI6MjA4OTQxMjEyOH0.zL2QkqVNj1cqaatWtoGuGooCChaiTmGGGJLzvC-JKW0'
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY
   }
 };
 
